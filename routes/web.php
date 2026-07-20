@@ -7,15 +7,22 @@ use App\Http\Controllers\PersonalDetailsController;
 use App\Http\Controllers\WageController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ProfileController;
 
 Route::get("/", fn() => redirect()->route("login"));
+
+// Public ICS feed — no auth required
+Route::get("/calendar/{token}.ics", [CalendarController::class, "feed"])->name("calendar.feed")->where("token", "[a-zA-Z0-9]+");
 
 Route::middleware(["auth"])->group(function () {
     Route::get("/dashboard", [DashboardController::class, "index"])->name("dashboard");
     Route::get("/profile", [ProfileController::class, "edit"])->name("profile.edit");
     Route::patch("/profile", [ProfileController::class, "update"])->name("profile.update");
     Route::delete("/profile", [ProfileController::class, "destroy"])->name("profile.destroy");
+
+    // Calendar
+    Route::post("/calendar/regenerate", [CalendarController::class, "regenerate"])->name("calendar.regenerate");
 
     // Employees
     Route::resource("employees", EmployeeController::class)->except(["destroy"]);
@@ -35,8 +42,6 @@ Route::middleware(["auth"])->group(function () {
     Route::post("leave/{leaveRequest}/decline", [LeaveController::class, "decline"])->name("leave.decline");
     Route::post("leave/{leaveRequest}/cancel", [LeaveController::class, "cancel"])->name("leave.cancel");
     Route::put("leave/{leaveRequest}/reschedule", [LeaveController::class, "reschedule"])->name("leave.reschedule");
-
-    // Disruptions
     Route::post("leave/disruption/add", [LeaveController::class, "addDisruption"])->name("leave.disruption.add");
     Route::delete("leave/disruption/{disruption}/delete", [LeaveController::class, "deleteDisruption"])->name("leave.disruption.delete");
 });

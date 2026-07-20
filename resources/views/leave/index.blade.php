@@ -330,4 +330,34 @@ function leaveApp() {
     }
 }
 </script>
+
+    {{-- Calendar Sync --}}
+    <div class="bg-white border rounded-lg p-5 mb-6">
+        <div class="flex items-start justify-between gap-4 flex-wrap">
+            <div>
+                <h3 class="text-sm font-semibold text-gray-900 mb-1">📅 Sync to Outlook / Calendar</h3>
+                <p class="text-xs text-gray-500 mb-3">Subscribe to your personal leave calendar in Outlook, Google Calendar, or Apple Calendar. Approved leave and bank holidays appear automatically.</p>
+                @if(auth()->user()->calendar_token)
+                <div class="flex items-center gap-2 flex-wrap">
+                    <code class="text-xs bg-gray-100 border rounded px-3 py-2 text-gray-700 break-all flex-1 min-w-0 select-all" id="cal-url">{{ url('/calendar/' . auth()->user()->calendar_token . '.ics') }}</code>
+                    <button onclick="navigator.clipboard.writeText(document.getElementById('cal-url').textContent).then(()=>this.textContent='Copied!')" class="px-3 py-2 bg-blue-600 text-white rounded text-xs font-medium whitespace-nowrap hover:bg-blue-700">Copy URL</button>
+                </div>
+                <div class="mt-3 flex gap-3 flex-wrap text-xs">
+                    <a href="https://outlook.office.com/calendar/addcalendar" target="_blank" class="flex items-center gap-1 text-blue-600 hover:underline">Open Outlook → Add Calendar → From Internet →  paste URL</a>
+                </div>
+                <div class="mt-2">
+                    <form method="POST" action="{{ route('calendar.regenerate') }}" onsubmit="return confirm('This will break your existing subscription link. Continue?')">
+                        @csrf
+                        <button type="submit" class="text-xs text-gray-400 hover:text-red-500 hover:underline">🔄 Reset link</button>
+                    </form>
+                </div>
+                @endif
+            </div>
+            <div class="shrink-0 hidden md:block">
+                <div class="w-14 h-14 rounded-xl bg-blue-50 flex items-center justify-center text-3xl border border-blue-100">📅</div>
+            </div>
+        </div>
+    </div>
+
+</div>
 </x-app-layout>

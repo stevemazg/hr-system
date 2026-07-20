@@ -10,9 +10,19 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class User extends Authenticatable {
     use HasFactory, Notifiable;
 
-    protected $fillable = ["org_id","name","email","password","role","first_name","last_name","phone","avatar_path","job_title","employment_type","start_date","end_date","working_hours_per_week","line_manager_id","active"];
+    protected $fillable = ["org_id","name","email","password","role","first_name","last_name","phone","avatar_path","job_title","employment_type","start_date","end_date","working_hours_per_week","line_manager_id","active","calendar_token"];
     protected $hidden = ["password","remember_token"];
     protected $casts = ["email_verified_at" => "datetime","start_date" => "date","end_date" => "date","active" => "boolean","working_hours_per_week" => "decimal:1"];
+
+
+    protected static function boot(): void {
+        parent::boot();
+        static::creating(function (self $user) {
+            if (empty($user->calendar_token)) {
+                $user->calendar_token = \Illuminate\Support\Str::random(48);
+            }
+        });
+    }
 
     public function getFullNameAttribute(): string { return trim("{$this->first_name} {$this->last_name}") ?: $this->name; }
     public function getInitialsAttribute(): string {
