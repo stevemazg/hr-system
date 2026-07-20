@@ -19,6 +19,9 @@
             <a href="{{ route("employees.index") }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium {{ request()->routeIs("employees.*") ? "bg-blue-600 text-white" : "text-gray-300 hover:bg-gray-700" }}">People</a>
             <a href="{{ route("leave.index") }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium {{ request()->routeIs("leave.*") ? "bg-blue-600 text-white" : "text-gray-300 hover:bg-gray-700" }}">Leave</a>
             <a href="{{ route("profile.edit") }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium {{ request()->routeIs("profile.*") ? "bg-blue-600 text-white" : "text-gray-300 hover:bg-gray-700" }}">Profile</a>
+            @if(auth()->user()->isGlobalAdmin())
+            <a href="{{ route("organisations.index") }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium {{ request()->routeIs("organisations.*") ? "bg-blue-600 text-white" : "text-gray-300 hover:bg-gray-700" }}">Organisations</a>
+            @endif
         </nav>
         <div class="px-4 py-4 border-t border-gray-700">
             @auth

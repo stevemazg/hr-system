@@ -9,6 +9,7 @@ use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\OrganisationController;
 
 Route::get("/", fn() => redirect()->route("login"));
 
@@ -33,6 +34,13 @@ Route::middleware(["auth"])->group(function () {
     Route::get("documents/{document}/download", [DocumentController::class, "download"])->name("documents.download");
     Route::post("employees/{employee}/wages", [WageController::class, "store"])->name("wages.store");
     Route::post("employees/{employee}/leave/adjust", [LeaveController::class, "adjust"])->name("leave.adjust");
+
+    // Organisations (admin only)
+    Route::get("organisations", [OrganisationController::class, "index"])->name("organisations.index");
+    Route::get("organisations/{organisation}/edit", [OrganisationController::class, "edit"])->name("organisations.edit");
+    Route::put("organisations/{organisation}", [OrganisationController::class, "update"])->name("organisations.update");
+    Route::put("organisations/{organisation}/leave-types/{leaveType}", [OrganisationController::class, "updateLeaveType"])->name("organisations.leave-types.update");
+    Route::post("organisations/{organisation}/leave-types", [OrganisationController::class, "storeLeaveType"])->name("organisations.leave-types.store");
 
     // Leave
     Route::get("leave", [LeaveController::class, "index"])->name("leave.index");

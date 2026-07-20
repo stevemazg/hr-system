@@ -5,8 +5,13 @@
             @foreach($myBalances as $bal)
             <div class="bg-white rounded-lg border p-4">
                 <p class="text-xs font-medium text-gray-500 uppercase">{{ $bal->leaveType->name }}</p>
+                @if($bal->leaveType->has_allowance)
                 <p class="text-2xl font-bold text-gray-900 mt-1">{{ number_format($bal->available, 1) }}</p>
-                <p class="text-xs text-gray-400 mt-1">of {{ number_format($bal->total_entitlement, 1) }} days</p>
+                <p class="text-xs text-gray-400 mt-1">of {{ number_format($bal->total_entitlement, 1) }} days remaining</p>
+                @else
+                <p class="text-2xl font-bold text-gray-900 mt-1">{{ number_format($bal->used_days, 1) }}</p>
+                <p class="text-xs text-gray-400 mt-1">{{ $bal->used_days == 1 ? 'day' : 'days' }} taken</p>
+                @endif
             </div>
             @endforeach
             @if($myBalances->isEmpty())

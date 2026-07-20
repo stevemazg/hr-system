@@ -91,10 +91,15 @@
                 @foreach($employee->leaveAllowances()->with("leaveType")->where("year", now()->year)->get() as $bal)
                 <div class="bg-white border rounded-lg p-4">
                     <p class="text-xs text-gray-500 uppercase font-medium">{{ $bal->leaveType->name }}</p>
+                    @if($bal->leaveType->has_allowance)
                     <p class="text-2xl font-bold mt-1">{{ number_format($bal->available,1) }}</p>
-                    <p class="text-xs text-gray-400">of {{ number_format($bal->total_entitlement,1) }} days</p>
+                    <p class="text-xs text-gray-400">of {{ number_format($bal->total_entitlement,1) }} days remaining</p>
                     @if($user->isManager())
                     <p class="text-xs text-gray-400 mt-1">Used: {{ $bal->used_days }} | Carried: {{ $bal->carried_days }}</p>
+                    @endif
+                    @else
+                    <p class="text-2xl font-bold mt-1">{{ number_format($bal->used_days,1) }}</p>
+                    <p class="text-xs text-gray-400">{{ $bal->used_days == 1 ? 'day' : 'days' }} taken</p>
                     @endif
                 </div>
                 @endforeach
