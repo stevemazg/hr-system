@@ -5,6 +5,8 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\PersonalDetailsController;
 use App\Http\Controllers\WageController;
+use App\Http\Controllers\ContractController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ProfileController;
 
 Route::get("/", fn() => redirect()->route("login"));
@@ -31,9 +33,14 @@ Route::middleware(["auth"])->group(function () {
     Route::post("leave/{leaveRequest}/approve", [LeaveController::class, "approve"])->name("leave.approve");
     Route::post("leave/{leaveRequest}/decline", [LeaveController::class, "decline"])->name("leave.decline");
     Route::post("leave/{leaveRequest}/cancel", [LeaveController::class, "cancel"])->name("leave.cancel");
-
-    // Allowance adjustments
     Route::post("employees/{employee}/leave/adjust", [LeaveController::class, "adjust"])->name("leave.adjust");
+
+    // Contracts
+    Route::post("employees/{employee}/contracts", [ContractController::class, "store"])->name("contracts.store");
+
+    // Documents
+    Route::post("employees/{employee}/documents", [DocumentController::class, "store"])->name("documents.store");
+    Route::get("documents/{document}/download", [DocumentController::class, "download"])->name("documents.download");
 
     // Wages (global admin only)
     Route::post("employees/{employee}/wages", [WageController::class, "store"])->name("wages.store");
