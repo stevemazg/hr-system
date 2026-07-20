@@ -17,18 +17,22 @@
         @endif
     </div>
 
-    <div x-data="{ tab: window.location.hash ? window.location.hash.substring(1) : "employment" }">
+    <div x-data="{ tab: window.location.hash ? window.location.hash.substring(1) : 'employment' }">
         <div class="flex gap-1 border-b mb-6 overflow-x-auto">
             @foreach(["employment" => "Employment", "personal" => "Personal", "leave" => "Leave", "contracts" => "Contracts", "documents" => "Documents"] as $key => $label)
-            <button @click="tab=\{{ }}\; window.location.hash=\{{ }}" :class="tab===\{{ }}\ ? \border-b-2 border-blue-600 text-blue-600\ : \text-gray-500 hover:text-gray-700" class="px-4 py-2 text-sm font-medium whitespace-nowrap">{{ $label }}</button>
+            <button @click="tab='{{ $key }}'; window.location.hash='{{ $key }}'"
+                    :class="tab==='{{ $key }}' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-700'"
+                    class="px-4 py-2 text-sm font-medium whitespace-nowrap">{{ $label }}</button>
             @endforeach
             @if($canViewWages)
-            <button @click="tab=\wages\; window.location.hash=\wages" :class="tab===\wages\ ? \border-b-2 border-blue-600 text-blue-600\ : \text-gray-500 hover:text-gray-700" class="px-4 py-2 text-sm font-medium whitespace-nowrap">Wages</button>
+            <button @click="tab='wages'; window.location.hash='wages'"
+                    :class="tab==='wages' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-700'"
+                    class="px-4 py-2 text-sm font-medium whitespace-nowrap">Wages</button>
             @endif
         </div>
 
         {{-- EMPLOYMENT --}}
-        <div x-show="tab===\employment">
+        <div x-show="tab==='employment'">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="bg-white border rounded-lg p-5">
                     <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">Employment Details</h3>
@@ -57,7 +61,7 @@
         </div>
 
         {{-- PERSONAL --}}
-        <div x-show="tab===\personal">
+        <div x-show="tab==='personal'">
             @php $d = $employee->personalDetails; @endphp
             <div class="bg-white border rounded-lg p-5">
                 <div class="flex justify-between items-center mb-4">
@@ -82,7 +86,7 @@
         </div>
 
         {{-- LEAVE --}}
-        <div x-show="tab===\leave">
+        <div x-show="tab==='leave'">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 @foreach($employee->leaveAllowances()->with("leaveType")->where("year", now()->year)->get() as $bal)
                 <div class="bg-white border rounded-lg p-4">
@@ -141,7 +145,7 @@
         </div>
 
         {{-- CONTRACTS --}}
-        <div x-show="tab===\contracts">
+        <div x-show="tab==='contracts'">
             @if($user->isManager())
             <div class="bg-white border rounded-lg p-5 mb-6">
                 <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">Add Contract</h3>
@@ -181,7 +185,7 @@
         </div>
 
         {{-- DOCUMENTS --}}
-        <div x-show="tab===\documents">
+        <div x-show="tab==='documents'">
             @if($user->isManager())
             <div class="bg-white border rounded-lg p-5 mb-6">
                 <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">Upload Document</h3>
@@ -222,7 +226,7 @@
 
         {{-- WAGES (admin only) --}}
         @if($canViewWages)
-        <div x-show="tab===\wages">
+        <div x-show="tab==='wages'">
             <div class="bg-white border rounded-lg p-5 mb-6">
                 <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">Add Wage Record</h3>
                 <form method="POST" action="{{ route("wages.store",$employee) }}" class="grid grid-cols-2 md:grid-cols-3 gap-3">
