@@ -1,3 +1,6 @@
+# Allow Lets Encrypt ACME challenge
+RewriteEngine On
+RewriteRule ^\.well-known/ - [L]
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
