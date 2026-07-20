@@ -13,18 +13,19 @@ Route::get("/", fn() => redirect()->route("login"));
 
 Route::middleware(["auth"])->group(function () {
     Route::get("/dashboard", [DashboardController::class, "index"])->name("dashboard");
-
-    // Profile (Breeze)
     Route::get("/profile", [ProfileController::class, "edit"])->name("profile.edit");
     Route::patch("/profile", [ProfileController::class, "update"])->name("profile.update");
     Route::delete("/profile", [ProfileController::class, "destroy"])->name("profile.destroy");
 
     // Employees
     Route::resource("employees", EmployeeController::class)->except(["destroy"]);
-
-    // Personal details
     Route::get("employees/{employee}/personal", [PersonalDetailsController::class, "edit"])->name("employees.personal.edit");
     Route::put("employees/{employee}/personal", [PersonalDetailsController::class, "update"])->name("employees.personal.update");
+    Route::post("employees/{employee}/contracts", [ContractController::class, "store"])->name("contracts.store");
+    Route::post("employees/{employee}/documents", [DocumentController::class, "store"])->name("documents.store");
+    Route::get("documents/{document}/download", [DocumentController::class, "download"])->name("documents.download");
+    Route::post("employees/{employee}/wages", [WageController::class, "store"])->name("wages.store");
+    Route::post("employees/{employee}/leave/adjust", [LeaveController::class, "adjust"])->name("leave.adjust");
 
     // Leave
     Route::get("leave", [LeaveController::class, "index"])->name("leave.index");
@@ -33,17 +34,11 @@ Route::middleware(["auth"])->group(function () {
     Route::post("leave/{leaveRequest}/approve", [LeaveController::class, "approve"])->name("leave.approve");
     Route::post("leave/{leaveRequest}/decline", [LeaveController::class, "decline"])->name("leave.decline");
     Route::post("leave/{leaveRequest}/cancel", [LeaveController::class, "cancel"])->name("leave.cancel");
-    Route::post("employees/{employee}/leave/adjust", [LeaveController::class, "adjust"])->name("leave.adjust");
+    Route::put("leave/{leaveRequest}/reschedule", [LeaveController::class, "reschedule"])->name("leave.reschedule");
 
-    // Contracts
-    Route::post("employees/{employee}/contracts", [ContractController::class, "store"])->name("contracts.store");
-
-    // Documents
-    Route::post("employees/{employee}/documents", [DocumentController::class, "store"])->name("documents.store");
-    Route::get("documents/{document}/download", [DocumentController::class, "download"])->name("documents.download");
-
-    // Wages (global admin only)
-    Route::post("employees/{employee}/wages", [WageController::class, "store"])->name("wages.store");
+    // Disruptions
+    Route::post("leave/disruption/add", [LeaveController::class, "addDisruption"])->name("leave.disruption.add");
+    Route::delete("leave/disruption/{disruption}/delete", [LeaveController::class, "deleteDisruption"])->name("leave.disruption.delete");
 });
 
 require __DIR__ . "/auth.php";
